@@ -1,0 +1,9 @@
+# Bibliotecas principais
+selenium==4.20.0
+beautifulsoup4==4.12.3
+pandas==2.2.2
+openpyxl==3.1.2
+geopy==2.4.1
+
+# WebDriver Manager (opcional, mas útil para gerenciar drivers do Selenium automaticamente)
+webdriver-manager==4.0.1
