@@ -1,4 +1,5 @@
 # Projeto_OlxAluguel_scraping
+<<<<<<< HEAD
 Projeto_OlxAluguel_scraping/
 │
 ├── scraper.py         # Onde ficará a classe OlxScraper
@@ -8,3 +9,4 @@ Projeto_OlxAluguel_scraping/
 ├── index.html         # Pode manter aqui se for usar visualização web
 ├── /dados             # Pasta para salvar seus arquivos Excel
 └── /venv              # Ambiente virtual (já criado)
+====
