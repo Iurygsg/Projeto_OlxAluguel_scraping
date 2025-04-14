@@ -9,22 +9,11 @@ caminho = r'dados/dados_olx.xlsx'
 # scraperVar = OlxScraper(base_url)
 # scraperVar.coletar_anuncios()
 # scraperVar.exportar_dados(caminho)
-df=pd.read_excel('Projeto_OlxAluguel_scraping/dados/dados_olx.xlsx')
+df=pd.read_excel('Projeto_OlxAluguel_scraping/'+ caminho)
 
-from geopy.geocoders import Nominatim
-from geopy.distance import geodesic
-# Inicializa o geolocalizador
-geolocator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0")
+# Aplicar tratamento
+tratamento = Tratamento(df)
+df_tratado = tratamento.processar()
 
-# Coordenadas de referência do bairro Padre Eustáquio, BH
-local_referencia = "Belo Horizonte"
-def geocode_with_retry(local_referencia, tentativas=3):
-    for i in range(tentativas):
-        try:
-            return geolocator.geocode(local_referencia, timeout=10)
-        except :
-            print(f"Tentativa {i+1} falhou. Tentando novamente...")
-            time.sleep(2)
-    return None
-local_ref_coords = geocode_with_retry(local_referencia)
-print(local_ref_coords)
+# Salvar o resultado
+df_tratado.to_excel("dados/anuncios_tratado.xlsx", index=False)
