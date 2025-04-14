@@ -87,8 +87,8 @@ class OlxScraper:
                 "Título": titulo.text.strip() if titulo else "N/D",
                 "Preço": preco.text.strip() if preco else "N/D",
                 "URL": link['href'] if link else "N/D",
-                "Localizalização": local.text.strip() if local else "N/D",
-                "Datapub": self.tratar_data_publicacao(data.text.strip()) if data else "N/D"
+                "Localizacao": local.text.strip() if local else "N/D",
+                "Data publicada": self.tratar_data_publicacao(data.text.strip()) if data else "N/D"
             }
 
             self.lista_anuncios.append(info)
@@ -99,5 +99,4 @@ class OlxScraper:
     def exportar_dados(self, caminho):
         df = pd.DataFrame(self.lista_anuncios)
         df.to_excel(caminho, index=False)
-
 
