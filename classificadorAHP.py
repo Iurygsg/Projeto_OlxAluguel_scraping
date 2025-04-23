@@ -15,17 +15,17 @@ class ClassificacaoAHP:
         precos = self.df["Valor"].values
         n = len(precos)
 
-        matriz = np.zeros((n, n))
+        matriz = np.ones((n, n))
+        
         dif_max = np.max(np.abs(precos[:, None] - precos[None, :]))
 
         for i in range(n):
-            for j in range(n):
+            for j in range(i + 1, n):
                 dif = abs(precos[i] - precos[j])
-                if dif_max == 0:
-                    nota = 1  # todos os preços iguais
-                else:
-                    nota = 1 + 8 * (dif / dif_max) #interpolação linear
+                nota = 1 if dif_max == 0 else 1 + 8 * (dif / dif_max)
                 matriz[i, j] = nota
+                matriz[j, i] = 1 / nota
+
         df_matriz = pd.DataFrame(matriz, index=self.df.index, columns=self.df.index)
         return df_matriz
     
@@ -33,23 +33,15 @@ class ClassificacaoAHP:
         distancias = self.df["Distância do Ref (km)"].values
         n = len(distancias)
 
-        matrizt = np.zeros((n, n))
-        matriz = np.zeros((n, n))
+        matriz = np.ones((n, n))
         dif_max = np.max(np.abs(distancias[:, None] - distancias[None, :]))
 
         for i in range(n):
-            for j in range(n):
-                if i == j:
-                    nota = 1  # Comparação com ele mesmo
-                else:
-                    dif = abs(distancias[i] - distancias[j])
-                    if dif_max == 0:
-                        nota = 1  # todos os imóveis estão à mesma distância
-                    else:
-                        nota = 9 - 8 * (dif / dif_max)  # interpolação inversa
-                matrizt[i, j] = nota
-                matrizt[j, i] = 1 / nota 
-                matriz = matrizt.T
+            for j in range(i + 1, n):
+                dif = abs(distancias[i] - distancias[j])
+                nota = 1 if dif_max == 0 else 1 + 8 * (1 - (dif / dif_max))
+                matriz[i, j] = nota
+                matriz[j, i] = 1 / nota
 
         df_matriz = pd.DataFrame(matriz, index=self.df.index, columns=self.df.index)
         return df_matriz
@@ -62,5 +54,6 @@ class ClassificacaoAHP:
 tratar = ClassificacaoAHP(df)
 matriz_preco = tratar.matriz_preferencia_preco()
 matriz_distancia = tratar.matriz_preferencia_distancia()
+
 print("M. Preço\n", matriz_preco)
 print("M. Distancia\n", matriz_distancia)
