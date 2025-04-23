@@ -7,6 +7,7 @@ import random
 import os
 from datetime import datetime, timedelta
 from selenium.webdriver.firefox.service import Service
+import re
 
 class OlxScraper:
     def __init__(self, base_url):
@@ -85,7 +86,7 @@ class OlxScraper:
 
             info = {
                 "Título": titulo.text.strip() if titulo else "N/D",
-                "Preço": preco.text.strip() if preco else "N/D",
+                "Valor": preco.text.strip() if preco else "N/D",
                 "URL": link['href'] if link else "N/D",
                 "Localizacao": local.text.strip() if local else "N/D",
                 "Data publicada": self.tratar_data_publicacao(data.text.strip()) if data else "N/D"
@@ -98,5 +99,8 @@ class OlxScraper:
 
     def exportar_dados(self, caminho):
         df = pd.DataFrame(self.lista_anuncios)
-        df.to_excel(caminho, index=False)
+        df["Valor"] = df["Valor"].apply(lambda x : re.sub(r'[^\d,]', '', x).replace(',','.'))
+        df["Valor"] = df["Valor"].astype(float)
+        df["Valor"] = pd.to_numeric(df["Valor"], errors='coerce')
+        df.to_excel(caminho, index=True)
 
