@@ -4,7 +4,10 @@ from geopy.geocoders import Nominatim
 from geopy.distance import distance
 import time
 import pandas as pd
-import re
+
+caminho = r'Projeto_OlxAluguel_scraping/dados/dados_olx.xlsx'
+df=pd.read_excel(caminho) #lendo original
+valor_maximo=2500
 
 class Tratamento:
     def __init__(self, df, valor_maximo):
@@ -61,8 +64,11 @@ class Tratamento:
     def processar(self):
         print("Iniciando processamento...")
         self.separar_cidade_bairro()
-        self.calcular_distancia()
         self.filtroValor()
+        self.calcular_distancia()
         print("Processamento finalizado.")
         return self.df
     print("fim tratamento")
+
+tratar = Tratamento(df, valor_maximo)
+df_filtrado = tratar.processar()

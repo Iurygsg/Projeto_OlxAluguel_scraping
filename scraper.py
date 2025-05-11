@@ -10,10 +10,11 @@ from selenium.webdriver.firefox.service import Service
 import re
 
 class OlxScraper:
-    def __init__(self, base_url):
+    def __init__(self, base_url, caminho):
         self.base_url = base_url
         self.lista_anuncios = []
         self.driver = self.setup_driver()
+        self.caminho = caminho
 
     def setup_driver(self):
         FIREFOX_EXECUTABLE = os.getenv('FIREFOX_EXECUTABLE', r'C:\Users\iurex\AppData\Local\Mozilla Firefox\firefox.exe')
@@ -97,10 +98,9 @@ class OlxScraper:
         except Exception as e:
             print("Erro ao processar anúncio:", e)
 
-    def exportar_dados(self, caminho):
+    def exportar_dados(self):
         df = pd.DataFrame(self.lista_anuncios)
         df["Valor"] = df["Valor"].apply(lambda x : re.sub(r'[^\d,]', '', x).replace(',','.'))
-        df["Valor"] = df["Valor"].astype(float)
         df["Valor"] = pd.to_numeric(df["Valor"], errors='coerce')
-        df.to_excel(caminho, index=True)
-
+        df["Valor"] = df["Valor"].astype(float)
+        df.to_excel(self.caminho, index=True)
