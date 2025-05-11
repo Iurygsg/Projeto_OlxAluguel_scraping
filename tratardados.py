@@ -4,17 +4,18 @@ from geopy.geocoders import Nominatim
 from geopy.distance import distance
 import time
 import pandas as pd
+import winsound
 
-caminho = r'Projeto_OlxAluguel_scraping/dados/dados_olx.xlsx'
-df=pd.read_excel(caminho) #lendo original
-valor_maximo=2500
+
+
 
 class Tratamento:
-    def __init__(self, df, valor_maximo):
-        self.df = df
+    def __init__(self, df, valor_maximo, caminho):
+        self.df = df.copy()
         self.valor_maximo = valor_maximo
         self.geolocator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0")
         self.local_referencia = "Belo Horizonte, Padre Eustáquio"
+        self.caminho = caminho
 
     def geocode_with_retry(self, endereco, tentativas=3):
         for i in range(tentativas):
@@ -30,10 +31,10 @@ class Tratamento:
         self.df[["Cidade", "Bairro"]] = self.df["Localizacao"].str.split(",", n=1, expand=True)
         self.df["Cidade"] = self.df["Cidade"].str.strip()
         self.df["Bairro"] = self.df["Bairro"].str.strip()
-        self.df.drop(columns=["Localizacao"], inplace=True)
     
     def filtroValor(self):
-       self.df = self.df[self.df["Valor"] <= self.valor_maximo]
+       self.df = self.df[self.df["Valor"] <= self.valor_maximo].copy()
+       self.df = self.df[self.df["Valor"] != "N/D"].copy()
 
     def calcular_distancia(self):
         print("Procurando coordenadas de referência...")
@@ -58,7 +59,8 @@ class Tratamento:
                 distancia_km = None
             distancias.append(distancia_km)
 
-        self.df["Distância do Ref (km)"] = distancias
+        self.df.loc[:, "Distância do Ref (km)"] = distancias
+        self.df.dropna(subset=["Distância do Ref (km)"], inplace = True)
         print("Coluna de distâncias adicionada.")
 
     def processar(self):
@@ -66,9 +68,8 @@ class Tratamento:
         self.separar_cidade_bairro()
         self.filtroValor()
         self.calcular_distancia()
+        self.df.to_excel(self.caminho, index=True)
         print("Processamento finalizado.")
+        winsound.MessageBeep()
         return self.df
-    print("fim tratamento")
 
-tratar = Tratamento(df, valor_maximo)
-df_filtrado = tratar.processar()

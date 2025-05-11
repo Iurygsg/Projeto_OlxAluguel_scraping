@@ -5,9 +5,10 @@ import numpy as np
 
 
 class ClassificacaoAHP:
-    def __init__(self, df):
+    def __init__(self, df, caminho):
         self.df = df
         self.n = len(df)
+        self.caminho = caminho
 
     def matriz_preferencia_preco(self):
         precos = self.df["Valor"].values
@@ -64,6 +65,10 @@ class ClassificacaoAHP:
         
         matriz_prioridades = np.vstack([vetor_preco, vetor_dist]).T  # n x 2
         vetor_resultado = matriz_prioridades @ vetor_criterio         # n x 1
-        return vetor_resultado
+        self.df["Pontuação Preço"] = vetor_preco
+        self.df["Pontuação Distância"] = vetor_dist
+        self.df["Pontuação Final"] = vetor_resultado
+        self.df.to_excel(self.caminho, index=True)
+        return self.df
     
 
