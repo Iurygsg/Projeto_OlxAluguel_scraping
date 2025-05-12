@@ -6,8 +6,6 @@ import time
 import winsound
 
 
-
-
 class Tratamento:
     def __init__(self, df, valor_maximo, caminho):
         self.df = df.copy()
