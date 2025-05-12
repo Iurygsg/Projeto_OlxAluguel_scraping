@@ -3,7 +3,6 @@
 from geopy.geocoders import Nominatim
 from geopy.distance import distance
 import time
-import pandas as pd
 import winsound
 
 
@@ -68,7 +67,7 @@ class Tratamento:
         self.separar_cidade_bairro()
         self.filtroValor()
         self.calcular_distancia()
-        self.df.to_excel(self.caminho, index=True)
+        self.df.to_excel(self.caminho, index=False)
         print("Processamento finalizado.")
         winsound.MessageBeep()
         return self.df

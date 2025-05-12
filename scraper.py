@@ -22,6 +22,7 @@ class OlxScraper:
     
         options = webdriver.FirefoxOptions()
         options.binary_location = FIREFOX_EXECUTABLE
+        options.add_argument('--headless')
     
         service = Service(executable_path=GECKODRIVER_EXECUTABLE)
         return webdriver.Firefox(service=service, options=options)
@@ -44,7 +45,6 @@ class OlxScraper:
         return 3  # valor padrão
 
     def coletar_anuncios(self):
-        # sua lógica aqui...
         self.driver.get(self.base_url)
         time.sleep(random.randint(5, 15))
 
@@ -60,7 +60,7 @@ class OlxScraper:
                 html = self.driver.page_source
                 soup = BeautifulSoup(html, 'lxml')
 
-                anuncios = soup.find_all("section", {"class": "AdCard_root__Jkql_ AdCard_horizontal__hrnuP"})
+                anuncios = soup.find_all("section", {"class": "olx-adcard"})
                 if not anuncios:
                     print(f"Nenhum anúncio encontrado na página {pagina}.")
                     break
@@ -81,9 +81,9 @@ class OlxScraper:
         try:
             titulo = anuncio.find("h2", {"data-ds-component": "DS-Text"})
             preco = anuncio.find("h3", {"data-ds-component": "DS-Text"})
-            link = anuncio.find("a", {"class": "AdCard_link__4c7W6"})
-            local = anuncio.find("p", {"class": "olx-text olx-text--caption olx-text--block olx-text--regular AdCard_location__NGMql"})
-            data = anuncio.find("p", {"class": "olx-text olx-text--caption olx-text--block olx-text--regular AdCard_date__KCWNe"})
+            link = anuncio.find("a", {"data-testid": "adcard-link"})
+            local = anuncio.find("p", class_="olx-adcard__location")
+            data = anuncio.find("p", class_="olx-adcard__date")
 
             info = {
                 "Título": titulo.text.strip() if titulo else "N/D",
@@ -103,4 +103,4 @@ class OlxScraper:
         df["Valor"] = df["Valor"].apply(lambda x : re.sub(r'[^\d,]', '', x).replace(',','.'))
         df["Valor"] = pd.to_numeric(df["Valor"], errors='coerce')
         df["Valor"] = df["Valor"].astype(float)
-        df.to_excel(self.caminho, index=True)
+        df.to_excel(self.caminho, index=False)

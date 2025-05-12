@@ -1,6 +1,5 @@
 #classificação dos dados
 
-import pandas as pd
 import numpy as np
 
 
@@ -50,8 +49,8 @@ class ClassificacaoAHP:
     
     def matriz_pesocriterios(self):
         matriz = np.array([
-            [1, 5],
-            [1/5, 1]
+            [1, 3],
+            [1/3, 1]
         ])
         matriz = matriz / matriz.sum(axis=0)
         matriz = matriz.sum(axis=1) / len(matriz)
@@ -68,7 +67,7 @@ class ClassificacaoAHP:
         self.df["Pontuação Preço"] = vetor_preco
         self.df["Pontuação Distância"] = vetor_dist
         self.df["Pontuação Final"] = vetor_resultado
-        self.df.to_excel(self.caminho, index=True)
+        self.df.to_excel(self.caminho, index=False)
         return self.df
     
 
