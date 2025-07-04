@@ -32,6 +32,7 @@ class Tratamento:
     def filtroValor(self):
        self.df = self.df[self.df["Valor"] <= self.valor_maximo].copy()
        self.df = self.df[self.df["Valor"] != "N/D"].copy()
+       self.df = self.df[self.df["Area"] != "N/D"].copy()
 
     def calcular_distancia(self):
         print("Procurando coordenadas de referência...")

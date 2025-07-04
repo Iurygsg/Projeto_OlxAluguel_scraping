@@ -74,16 +74,17 @@ class ClassificacaoAHP:
         ])
         matriz = matriz / matriz.sum(axis=0)
         matriz = matriz.sum(axis=1) / len(matriz)
-        print("vetor pesos \n",  matriz)
+        print("vetor pesos (Preço, distancia, Area) \n",  matriz)
         return matriz
     
     def pontuacao_final(self):
         vetor_preco = self.matriz_preferencia_preco()
         vetor_dist = self.matriz_preferencia_distancia()
-        vetor_criterio = self.matriz_pesocriterios()
         vetor_metros = self.matriz_preferencia_metro()
+        vetor_criterio = self.matriz_pesocriterios()
+        
 
-        matriz_prioridades = np.vstack([vetor_preco, vetor_dist, vetor_metros]).T  # n x 2
+        matriz_prioridades = np.vstack([vetor_preco, vetor_dist, vetor_metros]).T  # n x 3
         vetor_resultado = matriz_prioridades @ vetor_criterio         # n x 1
         self.df["Pontuação Preço"] = vetor_preco
         self.df["Pontuação Distância"] = vetor_dist

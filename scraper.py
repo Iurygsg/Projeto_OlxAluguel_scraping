@@ -123,4 +123,5 @@ class OlxScraper:
         df["Valor"] = df["Valor"].apply(lambda x : re.sub(r'[^\d,]', '', x).replace(',','.'))
         df["Valor"] = pd.to_numeric(df["Valor"], errors='coerce')
         df["Valor"] = df["Valor"].astype(float)
+        df["Area"] = df["Area"].astype(float)
         df.to_excel(self.caminho, index=False)
