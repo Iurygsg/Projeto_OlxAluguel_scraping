@@ -40,9 +40,10 @@ class OlxScraper:
         if ultima_pagina_elemento:
             link_tag = ultima_pagina_elemento.find("a")
             if link_tag:
-                link = link_tag['href']
-                return int(link.split('&o=')[-1])
-        return 3  # valor padrão
+            #     link = link_tag['href']
+            #     return int(link.split('&o=')[-1])
+            # else:
+                return 3  # valor padrão
 
     def coletar_anuncios(self):
         self.driver.get(self.base_url)
@@ -84,13 +85,30 @@ class OlxScraper:
             link = anuncio.find("a", {"data-testid": "adcard-link"})
             local = anuncio.find("p", class_="olx-adcard__location")
             data = anuncio.find("p", class_="olx-adcard__date")
+            quartos = area = garagem = banheiros = "N/D"
+            # Coletando os detalhes internos
+            detalhes = anuncio.select("div.olx-adcard__detail")
+            for item in detalhes:
+                label = item.get("aria-label", "").lower()
+                if "quarto" in label:
+                    quartos = label
+                elif "metros quadrados" in label:
+                    area = label
+                elif "vaga de garagem" in label or "vagas de garagem" in label:
+                    garagem = label
+                elif "banheiro" in label:
+                    banheiros = label
 
             info = {
                 "Título": titulo.text.strip() if titulo else "N/D",
                 "Valor": preco.text.strip() if preco else "N/D",
                 "URL": link['href'] if link else "N/D",
                 "Localizacao": local.text.strip() if local else "N/D",
-                "Data publicada": self.tratar_data_publicacao(data.text.strip()) if data else "N/D"
+                "Data publicada": self.tratar_data_publicacao(data.text.strip()) if data else "N/D",
+                "Quartos": quartos,
+                "Área": area,
+                "Garagem": garagem,
+                "Banheiros": banheiros
             }
 
             self.lista_anuncios.append(info)

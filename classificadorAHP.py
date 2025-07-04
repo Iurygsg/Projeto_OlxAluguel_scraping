@@ -46,11 +46,11 @@ class ClassificacaoAHP:
         print("Coluna media distancia \n",  vetormedia_distancia)
 
         return vetormedia_distancia
-    
+    #matriz deve ser editada na mao para fins pessoais
     def matriz_pesocriterios(self):
         matriz = np.array([
-            [1, 3],
-            [1/3, 1]
+            [1, 4],
+            [1/4, 1]
         ])
         matriz = matriz / matriz.sum(axis=0)
         matriz = matriz.sum(axis=1) / len(matriz)

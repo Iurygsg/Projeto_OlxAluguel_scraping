@@ -22,12 +22,13 @@ df2.to_excel(caminho, index=False) #salvando o df filtrado de valores de nulos
 df2 = pd.read_excel(caminho) #lendo original
 
 # #seu limite de alugel
-valor_maximo=2500
+valor_maximo=2400
 
 tratar = Tratamento(df2, valor_maximo, caminho)
 df_tratado = tratar.processar()
 filtrar = ClassificacaoAHP(df_tratado, caminho)
 df_pontuado = filtrar.pontuacao_final()
+df_pontuado = df_pontuado.sort_values(by='Pontuação Final',ascending=False)
 # Salvar o resultado
 df_pontuado.to_excel("Projeto_OlxAluguel_scraping/dados/anuncios_tratado.xlsx", index=True)
 print("Pontuação Final:\n")
