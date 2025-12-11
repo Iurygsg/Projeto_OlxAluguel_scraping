@@ -17,12 +17,12 @@ class OlxScraper:
         self.caminho = caminho
 
     def setup_driver(self):
-        FIREFOX_EXECUTABLE = os.getenv('FIREFOX_EXECUTABLE', r'C:\Users\iurex\AppData\Local\Mozilla Firefox\firefox.exe')
+        FIREFOX_EXECUTABLE = os.getenv('FIREFOX_EXECUTABLE', r'C:\Program Files\Mozilla Firefox\firefox.exe')
         GECKODRIVER_EXECUTABLE = os.getenv('GECKODRIVER_EXECUTABLE', r'C:\Users\iurex\Documents\Puc\Tcc I\geckodriver.exe')
     
         options = webdriver.FirefoxOptions()
         options.binary_location = FIREFOX_EXECUTABLE
-        options.add_argument('--headless')
+        ## options.add_argument('--headless') executar em segundo plano
     
         service = Service(executable_path=GECKODRIVER_EXECUTABLE)
         return webdriver.Firefox(service=service, options=options)
